@@ -4,8 +4,11 @@ import numpy as np
 from bcraapi import estadisticas
 import streamlit as st
 import plotly.express as px
+import os
+import ssl
 
-requests.packages.urllib3.disable_warnings()
+# Set custom CA bundle path
+os.environ["SSL_CERT_FILE"] = ssl.get_default_verify_paths().openssl_cafile
 
 # Streamlit UI
 st.title("📊 Visualización de Datos - BCRA")
