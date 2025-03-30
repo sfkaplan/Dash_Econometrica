@@ -5,6 +5,8 @@ from bcraapi import estadisticas
 import streamlit as st
 import plotly.express as px
 
+requests.packages.urllib3.disable_warnings()
+
 # Streamlit UI
 st.title("📊 Visualización de Datos - BCRA")
 
@@ -25,7 +27,7 @@ else:
     label = "Base Monetaria"
 
 # Fetch data based on user selection
-df1 = estadisticas.monetarias(id_variable=variable_selection)
+df1 = estadisticas.monetarias(id_variable=variable_selection, verify=False)
 df1 = pd.DataFrame(df1['valor'].values, index=df1['fecha'])
 df1.index = pd.to_datetime(df1.index)
 df1.columns = ["Value"]
