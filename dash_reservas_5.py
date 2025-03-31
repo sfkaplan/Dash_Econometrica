@@ -16,6 +16,7 @@ variable_dict = {
     "Base Monetaria (ARS mn)": 15,
     "Inflación Mensual (%)": "inflacion",
     "Pobreza Hogares (%)": "pobreza",
+    "Balanza Comercial (USD mn)": "bc"
 }
 
 # User selection
@@ -26,6 +27,8 @@ if variable_dict[selected_variable] == "inflacion":
     label = "Inflación Mensual (%)"
 elif variable_dict[selected_variable] == "pobreza":
     label = "Pobreza Hogares (%)"
+elif variable_dict[selected_variable] == "bc":
+    label = "Balanza Comercial (USD mn)"
 else:
     variable_selection = variable_dict[selected_variable]
     label = selected_variable  # Keeps the original indicator label
@@ -56,11 +59,23 @@ def get_poverty_data():
     poverty.index = pd.date_range(start="2016-12-01", periods=len(poverty), freq="6MS")
     return poverty
 
+def get_bc_data():
+    url_3 = "https://www.economia.gob.ar/download/infoeco/apendice5.xlsx"
+    response = requests.get(url_3)
+    with BytesIO(response.content) as excel_file:
+        df = pd.read_excel(excel_file, sheet_name='1. ICA')  # Adjust skiprows if needed
+    bc = pd.DataFrame(df.iloc[272:,-4])
+    bc.columns = ['Balanza Comercial']
+    bc.index = pd.to_datetime(df.iloc[272:,0])
+    return bc
+
 # Fetch data based on user selection
 if variable_dict[selected_variable] == "inflacion":
     df1 = get_inflation_data()
 elif variable_dict[selected_variable] == "pobreza":
     df1 = get_poverty_data()
+elif variable_dict[selected_variable] == "bc":
+    df1 = get_bc_data()
 else:
     # API Request
     url = f"https://api.bcra.gob.ar/estadisticas/v3.0/monetarias/{variable_selection}?"
@@ -97,6 +112,31 @@ if variable_dict[selected_variable] == "inflacion":
 elif variable_dict[selected_variable] == "pobreza":
     aux = df.index.strftime("%b %Y")  # Convert to "Mar 2025" format
     fig = px.bar(df.reset_index(), x=aux, y=df.columns[0], title="Pobreza Hogares (%)", labels={"index": "Fecha", df.columns[0]: "Pobreza (%)"})
+    st.plotly_chart(fig)
+elif variable_dict[selected_variable] == "bc":
+# Options for aggregation and transformation
+    aggregation = st.selectbox("Seleccionar Unidad de Tiempo", ["Mensual", "Trimestral", "Anual"])
+    transformation = st.selectbox("Ver Tipo de Serie", ["Niveles", "Cambio Porcentual"])
+
+    # Resampling logic
+    if aggregation == "Mensual":
+        df_resampled = df
+    elif aggregation == "Trimestral":
+        df_resampled = df.resample('Q').sum()
+    elif aggregation == "Anual":
+        df_resampled = df.resample('Y').sum()
+
+    # Apply percentage change if selected
+    if transformation == "Cambio Porcentual":
+        df_resampled = df_resampled.pct_change() * 100
+
+    # Plot the data
+    fig = px.line(
+        df_resampled, 
+        x=df_resampled.index, 
+        y=df_resampled.columns,
+        title=f"{label}: {aggregation} ({transformation})"
+    )
     st.plotly_chart(fig)
 else:
     # Options for aggregation and transformation
