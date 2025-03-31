@@ -35,7 +35,7 @@ def get_inflation_data():
     with BytesIO(response.content) as excel_file:
         df = pd.read_excel(excel_file)  # Adjust skiprows if needed
     dates = df.iloc[4, 1:].T
-    inflation = df.iloc[8, 1:].T
+    inflation = df.iloc[7, 1:].T
     df2 = pd.DataFrame(inflation)
     df2.columns = ["Inflación Mensual (%)"]
     df2.index = pd.to_datetime(dates)
