@@ -46,7 +46,7 @@ def get_inflation_data():
     return df2
 
 def get_poverty_data():
-    url_2 = "https://www.indec.gob.ar/ftp/cuadros/sociedad/cuadros_informe_pobreza_09_24.xls"
+    url_2 = "https://www.indec.gob.ar/ftp/cuadros/sociedad/cuadros_informe_pobreza_03_25.xls"
     response = requests.get(url_2)
     with BytesIO(response.content) as excel_file:
         df = pd.read_excel(excel_file)  # Adjust skiprows if needed
