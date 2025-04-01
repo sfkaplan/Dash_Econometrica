@@ -169,5 +169,8 @@ else:
     st.plotly_chart(fig)
 
 # Export Data
-csv = df.to_csv().encode('utf-8')
+if variable_dict[selected_variable] == "inflacion" or variable_dict[selected_variable] == "pobreza": 
+    csv = df.to_csv().encode('utf-8')
+else:
+    csv = df_resampled.to_csv().encode('utf-8')
 st.download_button("Download Data as CSV", csv, "bcra_data.csv", "text/csv")
