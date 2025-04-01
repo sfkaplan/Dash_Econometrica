@@ -122,7 +122,7 @@ elif variable_dict[selected_variable] == "bc":
     if aggregation == "Mensual":
         df_resampled = df
     elif aggregation == "Trimestral":
-        df_resampled = df.resample('QE').sum()
+        df_resampled = df.resample('Q').sum()
     elif aggregation == "Anual":
         df_resampled = df.resample('YE').sum()
 
