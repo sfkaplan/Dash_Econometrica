@@ -103,5 +103,10 @@ elif tipo_visual == "Precios y Superficie":
 
     fig, ax = plt.subplots()
     sns.scatterplot(data=df_plot, x="Superficie_m2", y="Precio_USD", ax=ax)
-    sns.regplot(data=df_plot, x="Superficie_m2", y="Precio_USD", scatter=False, ax=ax_
+    sns.regplot(data=df_plot, x="Superficie_m2", y="Precio_USD", scatter=False, ax=ax, color="red")
+    ax.set_title("Precio vs. Superficie" + (" (sin outliers)" if eliminar_outliers else ""))
+    ax.set_xlabel("Superficie (m²)")
+    ax.set_ylabel("Precio (USD)")
+    st.pyplot(fig)
+
 
