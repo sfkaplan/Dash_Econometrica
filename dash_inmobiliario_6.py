@@ -239,6 +239,12 @@ with st.expander("Cálculo de renta para inmueble", expanded=False):
         )
 
     alquiler_anual_requerido = float(precio_inmueble_pyg) * (float(renta_pretendida_pct) / 100.0)
+    alquiler_mensual_requerido = alquiler_anual_requerido / 12.0
 
-    st.metric("Alquiler anual requerido (PYG)", pyg_format(alquiler_anual_requerido, 1))
+    m1, m2 = st.columns(2)
+    with m1:
+        st.metric("Alquiler anual requerido (PYG)", pyg_format(alquiler_anual_requerido, 1))
+    with m2:
+        st.metric("Cuota mensual requerida (PYG)", pyg_format(alquiler_mensual_requerido, 1))
+
     st.caption("Cálculo: alquiler anual requerido = precio del inmueble × renta pretendida.")
